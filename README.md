@@ -1,11 +1,12 @@
 
 
-CD into backend.  pip install -r requirements.txt
-CD into frontendVite. npm install
+CD into backend then execute the command pip install -r requirements.txt.
+
+then CD into frontendVite. npm install
 then npm run build
 cd into backend.  make a directory called buildFE
-Copy the assets and index.html into the folder buildFE
-on line 44 of api.py enter the openai key from the email
+Copy the assets folder and index.html into the folder buildFE
+then on line 44 of api.py enter the openai key from the email
 
 
 go to backend and enter this command
