@@ -86,5 +86,6 @@ class SPAStaticFiles(StaticFiles):
 #print(os.getcwd())
 
 
+#app.mount("/home", StaticFiles(directory="./buildFE", html = True))
 app.mount("/home", StaticFiles(directory="./_internal/buildFE2", html = True))
 #app.mount("/home", SPAStaticFiles(directory="./build/", html=True))
