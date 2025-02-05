@@ -1,0 +1,1 @@
+When you return a workout return the name of the workout, then a dash, then the number of sets and then the number of reps then a new line.

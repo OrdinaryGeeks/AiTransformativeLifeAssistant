@@ -43,7 +43,8 @@ app.add_middleware(
 
 openai.api_key = "redacted"
 
-documents = SimpleDirectoryReader("../documents").load_data()
+#documents = SimpleDirectoryReader("../documents").load_data()
+documents = SimpleDirectoryReader("./documents").load_data()
 #service_context = ServiceContext.from_defaults(llm=OpenAI(model="gpt-3.5-turbo", temperature=0.5, system_prompt="You are helping to make a decision about whether or not to hire Nathan based upon your companies entered answers of what they are looking for and what they are like.  Also list reasons why you gave your answer"))
 #index = VectorStoreIndex.from_documents(documents, service_context=service_context)
 
@@ -86,6 +87,6 @@ class SPAStaticFiles(StaticFiles):
 #print(os.getcwd())
 
 
-#app.mount("/home", StaticFiles(directory="./buildFE", html = True))
-app.mount("/home", StaticFiles(directory="./_internal/buildFE2", html = True))
+app.mount("/home", StaticFiles(directory="./buildFE", html = True))
+#app.mount("/home", StaticFiles(directory="./_internal/buildFE2", html = True))
 #app.mount("/home", SPAStaticFiles(directory="./build/", html=True))
