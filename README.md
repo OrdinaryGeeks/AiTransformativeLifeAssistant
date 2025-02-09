@@ -6,7 +6,12 @@ then CD into frontendVite. npm install
 then npm run build
 cd into backend.  make a directory called buildFE
 Copy the assets folder and index.html into the folder buildFE
-then on line 44 of api.py enter the openai key from the email
+In the index.html file put a ./ before the assets folder in the path for the two included files in the index.html
+
+
+~~then on line 44 of api.py enter the openai key from the email~~
+
+We dont need an openAI key for this so far.
 
 
 go to backend and enter this command
