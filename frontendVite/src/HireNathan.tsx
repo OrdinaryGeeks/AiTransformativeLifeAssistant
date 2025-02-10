@@ -1,9 +1,12 @@
 
 import axios from "axios";
 
-
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useState } from "react";
 
+import { Card } from '@mui/material';
+import Button from '@mui/material/Button';
+import { FormControl, Input, TextField, Typography } from '@mui/material';
 
 interface Question {
   question: string;
@@ -18,7 +21,8 @@ interface Workout {
 
 export default function HireNathan() {
   
-
+ const [jokes, setJokes] = useState([]);
+ const [advice, setAdvice] = useState("");
   const [workouts, setWorkouts] = useState<Workout[]>([]);
 
 
@@ -62,6 +66,23 @@ const parseForWorkouts = (response :any) => {
 
 
 }
+const getAJoke = (event : any) => {
+
+  axios.get("https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,racist,sexist,explicit&amount=10").then((response) => {
+
+
+   // setJokes(response.data.jokes);
+    console.log(response.data.jokes);
+  })
+}
+const getAdvice = () => {
+
+  axios.get("https://api.adviceslip.com/advice").then((response) => {
+  
+  console.log(response.data.slip.advice);
+  // console.log(response);})
+})
+}
 const hireNathanQuestion = (event : any) => {
  event.preventDefault();
  const hiringQuestion: Question = { question: event.target.question.value };
@@ -72,11 +93,34 @@ const hireNathanQuestion = (event : any) => {
 };
   return (
     <div>
-      <form onSubmit={hireNathanQuestion}>
-        <input type="text" name="question"></input>
-        <button type="submit">Hire Nathan</button>
-      </form>
-
+      <Card>
+    <Typography>Welcome to Wala The wellness and life assistant</Typography>
+    </Card>
+      <FormControl  className="MuiFormControl-marginDense" variant="outlined" onSubmit={hireNathanQuestion}>
+      
+        <Input sx={{ border: 1, m:2}} type="text" name="question"></Input>
+        <Button sx= {{m:2}} variant="contained" type="submit">Analyze Diet</Button>
+        <Button
+variant="contained"
+color="primary"
+component="label"
+startIcon={<CloudUploadIcon />}
+>
+Upload
+<input
+type="file"
+hidden
+onChange={(event) => console.log(event.target.files)}
+/>
+</Button>
+        <Button sx= {{m:2}} variant="contained" type="submit">Suggest Workout</Button>
+        <Button onClick={getAJoke} sx= {{m:2}} variant="contained" type="submit">Tell me a Joke</Button>
+        {jokes && 
+        <Typography>{jokes[0]}</Typography>}
+        <Button onClick={getAdvice} sx= {{m:2}} variant="contained" type="submit">Give me advice</Button>
+        {advice && 
+        <Typography>{advice}</Typography>}
+      </FormControl>
       {workouts.length>0 && 
       <div>
         
