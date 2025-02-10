@@ -55,7 +55,7 @@ const parseForWorkouts = (response :any) => {
      tempWorkouts = [...tempWorkouts, {name: name, sets: sets, reps: reps, weight: 0}];
 
      //setWorkouts([...workouts, {name: name, sets: sets, reps: reps, weight: 0}]);
-     alert(name + " " + sets + " " + reps);
+    // alert(name + " " + sets + " " + reps);
      console.log(workouts);
      
  }
