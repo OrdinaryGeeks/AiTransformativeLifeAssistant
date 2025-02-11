@@ -145,8 +145,7 @@ onChange={(event) => console.log(event.target.files)}
         <Button onClick={getAJoke} sx= {{m:2}} variant="contained" type="submit">Tell me a Joke</Button>
         
         <Button onClick={getAdvice} sx= {{m:2}} variant="contained" type="submit">Give me advice</Button>
-        {advice && 
-        <Typography>{advice}</Typography>}
+        
       </FormControl>
       {workouts.length>0 && 
       <div>
