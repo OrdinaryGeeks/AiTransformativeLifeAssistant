@@ -41,7 +41,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 #documents = SimpleDirectoryReader("../documents").load_data()
 documents = SimpleDirectoryReader("./documents").load_data()

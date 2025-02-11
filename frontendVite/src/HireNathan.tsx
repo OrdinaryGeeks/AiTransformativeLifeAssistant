@@ -4,9 +4,11 @@ import axios from "axios";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useState } from "react";
 
-import { Card } from '@mui/material';
+import { Card, Container } from '@mui/material';
 import Button from '@mui/material/Button';
 import { FormControl, Input,  Typography } from '@mui/material';
+import Joke from "./Joke";
+import Advice from "./Advice";
 
 interface Question {
   question: string;
@@ -21,7 +23,10 @@ interface Workout {
 
 export default function HireNathan() {
   
- const [jokes, setJokes] = useState([]);
+  const [showJoke, setShowJoke]= useState(false);
+  const [showAdvice, setShowAdvice] = useState(false);
+  const [joke, setJoke] = useState("");
+ //const [jokes, setJokes] = useState([]);
  const [advice, setAdvice] = useState("");
   const [workouts, setWorkouts] = useState<Workout[]>([]);
 
@@ -71,7 +76,24 @@ const getAJoke = () => {
   axios.get("https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,racist,sexist,explicit&amount=10").then((response) => {
 
 
-    setJokes([]);
+    let theJoke = "";
+    if(response.data.jokes[0].type == "single")
+    {
+      theJoke = 
+    response.data.jokes[0].joke;
+ 
+
+    }
+    if(response.data.jokes[0].type== "twopart")
+    {
+      console.log(response.data.jokes[0].setup + " " + response.data.jokes[0].delivery);
+      theJoke = response.data.jokes[0].setup + " " + response.data.jokes[0].delivery;
+    }
+    setShowJoke(true);
+    setShowAdvice(false);
+    setJoke(theJoke);
+    //console.log(theJoke);
+
     console.log(response.data.jokes);
   })
 }
@@ -79,7 +101,9 @@ const getAdvice = () => {
 
   axios.get("https://api.adviceslip.com/advice").then((response) => {
   
-    setAdvice("");
+    setAdvice(response.data.slip.advice);
+    setShowJoke(false);
+    setShowAdvice(true);
   console.log(response.data.slip.advice);
   // console.log(response);})
 })
@@ -93,10 +117,13 @@ const hireNathanQuestion = (event : any) => {
    .then((response) => {alert(response); parseForWorkouts(response);});
 };
   return (
-    <div>
-      <Card>
-    <Typography>Welcome to Wala The wellness and life assistant</Typography>
-    </Card>
+    <Container sx={{justifyContent:"center", width:1}}>
+
+    <Typography sx={{textAlign:"center"}}>Welcome to Wala The wellness and life assistant</Typography>
+    <Container sx={{width:1, flexDirection:"row", display: 'flex'}}>
+
+      <Card sx={{width:'30%'}}>
+     
       <FormControl  className="MuiFormControl-marginDense" variant="outlined" onSubmit={hireNathanQuestion}>
       
         <Input sx={{ border: 1, m:2}} type="text" name="question"></Input>
@@ -116,8 +143,7 @@ onChange={(event) => console.log(event.target.files)}
 </Button>
         <Button sx= {{m:2}} variant="contained" type="submit">Suggest Workout</Button>
         <Button onClick={getAJoke} sx= {{m:2}} variant="contained" type="submit">Tell me a Joke</Button>
-        {jokes && 
-        <Typography>{jokes[0]}</Typography>}
+        
         <Button onClick={getAdvice} sx= {{m:2}} variant="contained" type="submit">Give me advice</Button>
         {advice && 
         <Typography>{advice}</Typography>}
@@ -135,7 +161,12 @@ onChange={(event) => console.log(event.target.files)}
       ))}
       </div>
       }
-
-      </div>);
+</Card>
+<Card sx={{width:'70%', textAlign:'center',alignContent:'center'}}>
+  {showJoke && <Joke joke={joke}></Joke>}
+  {showAdvice && <Advice advice={advice}></Advice>}
+</Card>
+</Container>
+</Container>);
   
 }
