@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { Card } from '@mui/material';
 import Button from '@mui/material/Button';
-import { FormControl, Input, TextField, Typography } from '@mui/material';
+import { FormControl, Input,  Typography } from '@mui/material';
 
 interface Question {
   question: string;
@@ -66,12 +66,12 @@ const parseForWorkouts = (response :any) => {
 
 
 }
-const getAJoke = (event : any) => {
+const getAJoke = () => {
 
   axios.get("https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,racist,sexist,explicit&amount=10").then((response) => {
 
 
-   // setJokes(response.data.jokes);
+    setJokes([]);
     console.log(response.data.jokes);
   })
 }
@@ -79,6 +79,7 @@ const getAdvice = () => {
 
   axios.get("https://api.adviceslip.com/advice").then((response) => {
   
+    setAdvice("");
   console.log(response.data.slip.advice);
   // console.log(response);})
 })
