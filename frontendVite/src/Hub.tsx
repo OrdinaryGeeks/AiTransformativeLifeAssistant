@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import { FormControl, Input,  Typography } from '@mui/material';
 import Joke from "./Joke";
 import Advice from "./Advice";
+import Workout from "./Workout";
 
 interface Question {
   question: string;
@@ -21,10 +22,12 @@ interface Workout {
   weight: number;
 }
 
-export default function HireNathan() {
+export default function Hub() {
   
   const [showJoke, setShowJoke]= useState(false);
   const [showAdvice, setShowAdvice] = useState(false);
+  const [showWorkout, setShowWorkout] = useState(false);
+  const [workout, setWorkout] = useState("");
   const [joke, setJoke] = useState("");
  //const [jokes, setJokes] = useState([]);
  const [advice, setAdvice] = useState("");
@@ -73,6 +76,16 @@ const parseForWorkouts = (response :any) => {
 }
 const getAJoke = () => {
 
+
+  axios
+  .get<string>("http://localhost:8000/tellmeajoke")
+  .then((response) => {alert(response); setJoke(response.data); console.log(response.data);});
+
+  setShowJoke(true);
+  setShowAdvice(false);
+  setShowWorkout(false);
+};
+/*
   axios.get("https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,racist,sexist,explicit&amount=10").then((response) => {
 
 
@@ -96,18 +109,29 @@ const getAJoke = () => {
 
     console.log(response.data.jokes);
   })
+}*/
+const getWorkout = () => {
+
+  axios
+  .get<string>("http://localhost:8000/createworkout")
+  .then((response) => {alert(response); setWorkout(response.data); console.log(response.data);});
+
+  setShowJoke(false);
+  setShowAdvice(false);
+  setShowWorkout(true);
+
 }
 const getAdvice = () => {
 
-  axios.get("https://api.adviceslip.com/advice").then((response) => {
-  
-    setAdvice(response.data.slip.advice);
-    setShowJoke(false);
-    setShowAdvice(true);
-  console.log(response.data.slip.advice);
-  // console.log(response);})
-})
+  axios
+  .get<string>("http://localhost:8000/givemeadvice")
+  .then((response) => {alert(response); setAdvice(response.data); console.log(response.data);});
+
+  setShowJoke(false);
+  setShowAdvice(true);
+
 }
+
 const hireNathanQuestion = (event : any) => {
  event.preventDefault();
  const hiringQuestion: Question = { question: event.target.question.value };
@@ -141,7 +165,7 @@ hidden
 onChange={(event) => console.log(event.target.files)}
 />
 </Button>
-        <Button sx= {{m:2}} variant="contained" type="submit">Suggest Workout</Button>
+        <Button onClick={getWorkout} sx= {{m:2}} variant="contained" type="submit">Suggest Workout</Button>
         <Button onClick={getAJoke} sx= {{m:2}} variant="contained" type="submit">Tell me a Joke</Button>
         
         <Button onClick={getAdvice} sx= {{m:2}} variant="contained" type="submit">Give me advice</Button>
@@ -164,6 +188,7 @@ onChange={(event) => console.log(event.target.files)}
 <Card sx={{width:'70%', textAlign:'center',alignContent:'center'}}>
   {showJoke && <Joke joke={joke}></Joke>}
   {showAdvice && <Advice advice={advice}></Advice>}
+  {showWorkout && <Workout workout={workout}></Workout>}
 </Card>
 </Container>
 </Container>);
