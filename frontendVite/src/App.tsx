@@ -3,6 +3,7 @@ import Box from '@mui/material/Box'
 import './App.css'
 
 import Hub from './Hub'
+import Workoutform from './WorkoutForm'
 
 function App() {
  
@@ -12,7 +13,7 @@ function App() {
      flexDirection:"row", display: 'flex'}}>
      
      <Hub/>
-    
+     <Workoutform></Workoutform>
     </Box>
   )
 }
