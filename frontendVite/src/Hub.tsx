@@ -10,6 +10,8 @@ import { FormControl, Input,  Typography } from '@mui/material';
 import Joke from "./Joke";
 import Advice from "./Advice";
 import Workout from "./Workout";
+import Diet from "./Diet";
+import EnterWorkout from "./EnterWorkout";
 
 interface Question {
   question: string;
@@ -24,6 +26,9 @@ interface Workout {
 
 export default function Hub() {
   
+  const [showEnterWorkout, setShowEnterWorkout] = useState(false);
+  const [showDiet, setShowDiet] = useState(false);
+  const [diet, setDiet] = useState("");
   const [showJoke, setShowJoke]= useState(false);
   const [showAdvice, setShowAdvice] = useState(false);
   const [showWorkout, setShowWorkout] = useState(false);
@@ -74,6 +79,21 @@ const parseForWorkouts = (response :any) => {
 
 
 }
+
+const getDiet = () => {
+
+  
+  axios
+  .get<string>("http://localhost:8000/helpmewithdiet")
+  .then((response) => {alert(response); setDiet(response.data); console.log(response.data);});
+
+  setShowDiet(true);
+  setShowJoke(false);
+  setShowAdvice(false);
+  setShowWorkout(false);
+  setShowEnterWorkout(false);
+
+}
 const getAJoke = () => {
 
 
@@ -84,6 +104,9 @@ const getAJoke = () => {
   setShowJoke(true);
   setShowAdvice(false);
   setShowWorkout(false);
+  setShowDiet(false);
+  
+  setShowEnterWorkout(false);
 };
 /*
   axios.get("https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,racist,sexist,explicit&amount=10").then((response) => {
@@ -119,6 +142,9 @@ const getWorkout = () => {
   setShowJoke(false);
   setShowAdvice(false);
   setShowWorkout(true);
+  setShowDiet(false);
+  
+  setShowEnterWorkout(false);
 
 }
 const getAdvice = () => {
@@ -129,9 +155,25 @@ const getAdvice = () => {
 
   setShowJoke(false);
   setShowAdvice(true);
+  setShowDiet(false);
+  setShowWorkout(false);
+  
+  setShowEnterWorkout(false);
 
 }
 
+const getEnterWorkout = () => {
+
+
+  setShowJoke(false);
+  setShowAdvice(false);
+  setShowDiet(false);
+  setShowWorkout(false);
+  
+  setShowEnterWorkout(true);
+
+
+}
 const hireNathanQuestion = (event : any) => {
  event.preventDefault();
  const hiringQuestion: Question = { question: event.target.question.value };
@@ -151,7 +193,7 @@ const hireNathanQuestion = (event : any) => {
       <FormControl  className="MuiFormControl-marginDense" variant="outlined" onSubmit={hireNathanQuestion}>
       
         <Input sx={{ border: 1, m:2}} type="text" name="question"></Input>
-        <Button sx= {{m:2}} variant="contained" type="submit">Analyze Diet</Button>
+        <Button onClick={getDiet} sx= {{m:2}} variant="contained" type="submit">Analyze Diet</Button>
         <Button
 variant="contained"
 color="primary"
@@ -169,7 +211,7 @@ onChange={(event) => console.log(event.target.files)}
         <Button onClick={getAJoke} sx= {{m:2}} variant="contained" type="submit">Tell me a Joke</Button>
         
         <Button onClick={getAdvice} sx= {{m:2}} variant="contained" type="submit">Give me advice</Button>
-        
+        <Button onClick={getEnterWorkout} sx = {{m:2}} variant="contained" type="submit"> Enter workout</Button>
       </FormControl>
       {workouts.length>0 && 
       <div>
@@ -189,6 +231,8 @@ onChange={(event) => console.log(event.target.files)}
   {showJoke && <Joke joke={joke}></Joke>}
   {showAdvice && <Advice advice={advice}></Advice>}
   {showWorkout && <Workout workout={workout}></Workout>}
+  {showDiet && <Diet diet={diet}></Diet>}
+  {showEnterWorkout && <EnterWorkout></EnterWorkout>}
 </Card>
 </Container>
 </Container>);

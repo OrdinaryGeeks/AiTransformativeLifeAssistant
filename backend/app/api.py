@@ -4,12 +4,159 @@ from fastapi.middleware.cors import CORSMiddleware
 #from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 import os
+import subprocess
+from pydantic import BaseModel
+
+from typing import List
 
 
 import subprocess
 
+class Exercise(BaseModel):
+    name: str
+    sets: List[int]
+    reps: List[int]
+    weights:List[int]
+
+letters=[]
+process = ''
+
+file_path = "workout.txt"
+"""
+
+def SetupChatApp():
+    global process
+    parameters = ["--genie-config .\\genie_config.json", "--base-dir .\\"]
+    executable_path = "./ChatApp.exe"
+    powershell_command = ["powershell", "-Command", executable_path] + parameters
+
+    process = subprocess.Popen(powershell_command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+
+def QuestionCycle():
+
+    GetNamePrompt()
+    GetQuestion()
+
+def GetWelcomeMessage():
+    global process
+    i = 0
+    while True:
+        output = process.stdout.readline()
+
+        
+        if output == '' and process.poll() is not None:
+            print("break")
+            break
+        elif output:
+            print("printing line")
+            i+=1
+            print(output)
+        else:
+            print("It didnt fit")
+        
+        if(i == 7):
+            print("Breaking")
+            break
+def GetNamePrompt():
+    global process
+    print("GNP")
+    i = 0
+    while True:
+
+        print(i)
+        i+=1
+        if(i == 1):
+            break
+        output = process.stdout.readline()
+        print(output)
+
+def GetName():
+    global process
+    process.stdin.write('nate \n')
+    process.stdin.flush()
+
+    i = 1
+
+    while True:
+    
+        print(i)
+        i+=1
+        if(i == 6):
+            break
+        output = process.stdout.readline()
+        print(output)
+def GetQuestion(question):
+    global process
+    print(question)
+    i = 0
+    #user_input = input("What is your question")
+    process.stdin.write(question + "\n")
+    process.stdin.flush()
+    response=""
+    while True:
+        
+        print(i)
+        i+=1
+
+        if i==10:
+            break
+    # if(i == 6):
+        #    break
+        if i==4:
+            response = process.stdout.readline()
+            print("The response is " + response)
+        else:
+            output = process.stdout.readline()
+       # response+=output
+        print(output)
+    return response
 
 
+
+
+
+def MakeVertEntry(word, x, y):
+    global letters
+    for i in range(len(word)):
+        letters[x][y+i] = word[i]
+    print(letters)
+
+def MakeHorEntry(word, x, y):
+    global letters
+    for i in range(len(word)):
+        letters[x+i][y] = word[i]
+    print(letters)
+
+
+def GetClues():
+    global letters
+    #start top left corner
+    word = GetQuestion("Give me a medium sized word and return only the word in your response")
+    print("word is " + word)
+    if(len(word) < 10):
+        MakeVertEntry(word, 0, 0)
+
+    word = GetQuestion("Give me a medium sized word that starts with " + word[0] + " and return only the word in your response")
+    print("word is " + word)
+    if(len(word) < 10):
+        MakeHorEntry(word, 0, 0)
+
+    print(letters)
+
+    
+
+
+
+SetupChatApp()
+GetWelcomeMessage()
+GetName()
+#GetClues()
+
+
+
+
+#GetQuestion()
+"""
 app = FastAPI()
 
 
@@ -41,31 +188,58 @@ path = "C:/Users/alect/genie_bundle"
 #index = VectorStoreIndex.from_documents(documents)
 
 
+@app.get("/getCrossword", tags=["crossword"])
+async def get_crossword():
+
+
+    return letters
+
+@app.post("/postWorkout", tags=["postWorkout"])
+async def post_workout(workout: Exercise):
+    
+    tempWorkout = ""
+    i = 0
+    with open(file_path, "w") as file:
+        file.write(workout.name )
+        file.write("\n")
+        for set in workout.sets:
+            file.write(str(set) + " set - " + str(workout.reps[i]) + " with weight " + str(workout.weights[i]))
+            file.write("\n")
+
+
+
+
+
+    print(workout)
+
+@app.get("/helpmewithdiet", tags=["diet"])
+async def help_me_with_diet():
+
+    return GetQuestion("Recommend me a healthy diet for today in under 50 words")
+    
+
 @app.get("/tellmeajoke", tags=["joke"])
 async def tell_me_a_joke():
-
-    
-    #subprocess.run('cd ' + path, shell=True)
    
-    #result = subprocess.run('cd', capture_output = True, shell=True, text=True)
-   
-    parameters = ["-c genie_config.json", '-p "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\nWho is the first president of USA<|eot_id|><|start_header_id|>assistant<|end_header_id|>"']
-
-
-# Execute the command
-
-    executable_path = "./genie-t2t-run.exe"
-#parameters = '-c genie_config.json -p "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\nWho is the first president of USA<|eot_id|><|start_header_id|>assistant<|end_header_id|>"'
-# Construct the PowerShell command
-    powershell_command = ["powershell", "-Command", executable_path] + parameters
-
-
-# Construct the PowerShell command
-#powershell_command = f'powershell.exe -Command "& {{Start-Process \'{executable_path}\' -ArgumentList \'{parameters}\' -Wait}}"'
-#result = subprocess.run( ["powershell", "-Command", 'genie-2t-run.exe -c genie_config.json -p "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\nWho is the first president of USA<|eot_id|><|start_header_id|>assistant<|end_header_id|>"'],  capture_output = True, text=True)
-    result = subprocess.run(powershell_command, capture_output=True, text=True)
     
-    return result.stdout
+    
+    return GetQuestion("Tell me a joke in under  60 words")
+
+@app.get("/createworkout", tags=["workout"])
+async def create_a_workout():
+   
+ 
+    return GetQuestion("Give me a full body workout in under 60 words")
+
+@app.get("/givemeadvice", tags=["advice"])
+async def give_me_advice():
+   
+    
+    
+    return GetQuestion("Give me advice in under 60 words")
+
+
+
 
 
     
@@ -81,6 +255,6 @@ async def read_root() -> dict:
 
 
 
-#app.mount("/", StaticFiles(directory="./buildFE", html = True))
-app.mount("/home", StaticFiles(directory="./_internal/buildFE2", html = True))
+app.mount("/", StaticFiles(directory="./buildFE", html = True))
+#app.mount("/home", StaticFiles(directory="./_internal/buildFE2", html = True))
 #app.mount("/home", SPAStaticFiles(directory="./build/", html=True))
