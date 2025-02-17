@@ -22,16 +22,26 @@ letters=[]
 process = ''
 
 file_path = "workout.txt"
-"""
+
 
 def SetupChatApp():
     global process
+    global letters
     parameters = ["--genie-config .\\genie_config.json", "--base-dir .\\"]
+    #parameters = ["--genie-config  C:\\Users\\alect\\genie_bundle\\genie_config.json", "--base-dir C:\\Users\\alect\\genie_bundle"]
     executable_path = "./ChatApp.exe"
     powershell_command = ["powershell", "-Command", executable_path] + parameters
 
     process = subprocess.Popen(powershell_command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
 
+    i = 0
+    j = 0
+    for  i  in range(10): 
+        row = []
+        for j in range(10):
+            row.append( "")
+        letters.append(row)
+    
 def QuestionCycle():
 
     GetNamePrompt()
@@ -93,20 +103,40 @@ def GetQuestion(question):
     process.stdin.write(question + "\n")
     process.stdin.flush()
     response=""
+    foundBotResponse = False
     while True:
         
         print(i)
         i+=1
 
-        if i==10:
-            break
+       # if i==10:
+          #  break
     # if(i == 6):
         #    break
-        if i==4:
+        #if i==4:
+         #   response = process.stdout.readline()
+       #     print("The response is " + response)
+       # else:
+        
+        output = process.stdout.readline()
+
+        print(output + " is before the if statements " + str(i))
+
+        if output.find("<|start_header_id|>assistant<|end_header_id|>") != -1:
+            foundBotResponse = True
+            output= process.stdout.readline()
+            i+=1
+            print(output + " is before the if statements " + str(i))
             response = process.stdout.readline()
-            print("The response is " + response)
-        else:
-            output = process.stdout.readline()
+            print(response + " Is response  because its the line after startheaderid")
+            return response
+        if foundBotResponse == True:
+            if output.find("--------------------------------------------------------------------------------apple") != -1:
+            
+                print("Breaking in GQ")
+                break
+        
+
        # response+=output
         print(output)
     return response
@@ -117,13 +147,19 @@ def GetQuestion(question):
 
 def MakeVertEntry(word, x, y):
     global letters
-    for i in range(len(word)):
+
+    print(str(len(letters)))
+    print(str(len(letters[0])))
+    print(str(len(word)))
+    for i in range(len(word)-1):
+        print(word[i])
         letters[x][y+i] = word[i]
     print(letters)
 
 def MakeHorEntry(word, x, y):
     global letters
-    for i in range(len(word)):
+    for i in range(len(word)-1):
+        print(word[i])
         letters[x+i][y] = word[i]
     print(letters)
 
@@ -132,12 +168,14 @@ def GetClues():
     global letters
     #start top left corner
     word = GetQuestion("Give me a medium sized word and return only the word in your response")
+    word = word.strip()
     print("word is " + word)
     if(len(word) < 10):
         MakeVertEntry(word, 0, 0)
 
     word = GetQuestion("Give me a medium sized word that starts with " + word[0] + " and return only the word in your response")
-    print("word is " + word)
+    word = word.strip()
+    print("word is " + word + str(len(word)))
     if(len(word) < 10):
         MakeHorEntry(word, 0, 0)
 
@@ -150,13 +188,13 @@ def GetClues():
 SetupChatApp()
 GetWelcomeMessage()
 GetName()
-#GetClues()
+GetClues()
 
 
 
 
 #GetQuestion()
-"""
+
 app = FastAPI()
 
 
@@ -255,6 +293,6 @@ async def read_root() -> dict:
 
 
 
-app.mount("/", StaticFiles(directory="./buildFE", html = True))
-#app.mount("/home", StaticFiles(directory="./_internal/buildFE2", html = True))
+#app.mount("/", StaticFiles(directory="./buildFE", html = True))
+app.mount("/home", StaticFiles(directory="./_internal/buildFE2", html = True))
 #app.mount("/home", SPAStaticFiles(directory="./build/", html=True))

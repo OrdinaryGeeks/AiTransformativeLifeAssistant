@@ -1,19 +1,32 @@
 import Input from "@mui/material/Input";
 import { useState } from "react";
 
+interface Excercise{
+    name:string,
+    reps: Number[],
+    weights: Number[],
+    sets: Number[]
+}
+
 
 export default function EnterWorkout () {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<Excercise>({
         name: '',
         reps: [],
         sets: [],
-        weights:[]
-      
+        weights:[],
+        
       });
 
-
     const handleChange = (event : any) => {
-        const { name, value } = event.target;
+        let { name, value } = event.target;
+        if(name == "reps")
+            value = [...formData.reps, value]
+        if(name == "weights")
+            value = [...formData.weights, value]
+        if(name == "sets")
+            value = [...formData.sets, value]
+     
         setFormData({ ...formData, [name]: value });
       };
       const handleSubmit = async (event : any) => {

@@ -12,6 +12,8 @@ import Advice from "./Advice";
 import Workout from "./Workout";
 import Diet from "./Diet";
 import EnterWorkout from "./EnterWorkout";
+import Crossword from "./Crossword";
+import WordScramble from "./WordScramble";
 
 interface Question {
   question: string;
@@ -26,6 +28,11 @@ interface Workout {
 
 export default function Hub() {
   
+  const [showCrossWord, setShowCrossWord] = useState(false);
+  const [showWordScramble, setShowWordScramble] = useState(false);
+  const [crossWord, setCrossWord] = useState<Array<string>[]>([]);
+  const [wordScramble, setWordScramble] = useState<string[]>([]);
+  const [wordScrambleMixed, setWordScrambleMixed] = useState<string[]> ([]);
   const [showEnterWorkout, setShowEnterWorkout] = useState(false);
   const [showDiet, setShowDiet] = useState(false);
   const [diet, setDiet] = useState("");
@@ -94,6 +101,73 @@ const getDiet = () => {
   setShowEnterWorkout(false);
 
 }
+
+ function scrambleWord(word : string) {
+  var scrambledWord = word.split('');  // Convert the word into an array of characters
+  for (var i = scrambledWord.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));  // Generate a random index
+      var temp = scrambledWord[i];  // Swap the characters
+      scrambledWord[i] = scrambledWord[j];
+      scrambledWord[j] = temp;
+  }
+  return scrambledWord.join(''); 
+  
+}// Convert the array of characters back to a string
+const getAWordScramble = () => {
+const words = (["Bagel", "Tortoise", "Mouse"]);
+
+setWordScramble(words);
+
+let scrambledWords:string[] = [];
+words.forEach((word) => {
+
+scrambledWords.push(scrambleWord(word));
+
+
+})
+setWordScrambleMixed(scrambledWords);
+
+
+setShowJoke(false);
+setShowAdvice(false);
+setShowWorkout(false);
+setShowDiet(false);
+
+setShowEnterWorkout(false);
+setShowCrossWord(false);
+setShowWordScramble(true);
+
+
+
+}
+
+const getACrossword = () => {
+
+
+
+  axios
+  .get<[]>("http://localhost:8000/getCrossword").then((response) => {alert(response);
+   console.log(response.data); setCrossWord(response.data);
+  // 
+
+  console.log(response);
+  console.log(crossWord);
+  if(crossWord && crossWord.length >0 &&crossWord[0] && crossWord[0][1])
+  console.log(crossWord[0][1])
+
+  setShowJoke(false);
+  setShowAdvice(false);
+  setShowWorkout(false);
+  setShowDiet(false);
+  
+  setShowEnterWorkout(false);
+  setShowCrossWord(true);
+  setShowWordScramble(false);
+
+  }
+  )
+
+}
 const getAJoke = () => {
 
 
@@ -106,7 +180,10 @@ const getAJoke = () => {
   setShowWorkout(false);
   setShowDiet(false);
   
-  setShowEnterWorkout(false);
+  setShowEnterWorkout(false); setShowCrossWord(false);
+  
+  setShowWordScramble(false);
+  
 };
 /*
   axios.get("https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,racist,sexist,explicit&amount=10").then((response) => {
@@ -145,6 +222,9 @@ const getWorkout = () => {
   setShowDiet(false);
   
   setShowEnterWorkout(false);
+  setShowCrossWord(false);
+  
+  setShowWordScramble(false);
 
 }
 const getAdvice = () => {
@@ -159,6 +239,9 @@ const getAdvice = () => {
   setShowWorkout(false);
   
   setShowEnterWorkout(false);
+  setShowCrossWord(false);
+  
+  setShowWordScramble(false);
 
 }
 
@@ -171,6 +254,9 @@ const getEnterWorkout = () => {
   setShowWorkout(false);
   
   setShowEnterWorkout(true);
+  setShowCrossWord(false);
+  
+  setShowWordScramble(false);
 
 
 }
@@ -212,6 +298,8 @@ onChange={(event) => console.log(event.target.files)}
         
         <Button onClick={getAdvice} sx= {{m:2}} variant="contained" type="submit">Give me advice</Button>
         <Button onClick={getEnterWorkout} sx = {{m:2}} variant="contained" type="submit"> Enter workout</Button>
+        <Button onClick={getACrossword}sx = {{m:2}} variant="contained" type="submit"> Get a crossword</Button>
+        <Button onClick={getAWordScramble} sx = {{m:2}} variant="contained" type="submit"> Get a word scramble</Button>
       </FormControl>
       {workouts.length>0 && 
       <div>
@@ -233,6 +321,8 @@ onChange={(event) => console.log(event.target.files)}
   {showWorkout && <Workout workout={workout}></Workout>}
   {showDiet && <Diet diet={diet}></Diet>}
   {showEnterWorkout && <EnterWorkout></EnterWorkout>}
+  {showCrossWord && <Crossword crossword={crossWord}></Crossword>}
+  {showWordScramble && <WordScramble words={wordScramble} mixed={wordScrambleMixed}/>}
 </Card>
 </Container>
 </Container>);
