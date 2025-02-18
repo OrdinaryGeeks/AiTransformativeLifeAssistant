@@ -1,22 +1,33 @@
 import Input from "@mui/material/Input";
 import { useState } from "react";
-
+import { Box, Button } from "@mui/material";
 
 export default function EnterWorkout () {
     const [formData, setFormData] = useState({
-        name: '',
-        reps: [],
-        sets: [],
-        weights:[]
-      
-      });
+        workoutname: '',
+        exercises: [] as {
+            name: string;
+            sets: { reps: number; weight: number }[]; // Each set now has reps and weight
+        }[],
+    });
+
+    
 
 
     const handleChange = (event : any) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
       };
-      const handleSubmit = async (event : any) => {
+      const addExercise = (exercise: string, sets: { reps: number; weight: number }[]) => {
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            exercises: [
+                ...prevFormData.exercises,
+                { name: exercise, sets },
+            ],
+        }));
+    };
+    const handleSubmit = async (event : any) => {
         event.preventDefault();
       
         try {
@@ -38,13 +49,20 @@ export default function EnterWorkout () {
             console.error('There was a problem with the submission:', error);
         }
       };
+      const [exerciseName, setExerciseName] = useState("");
+    const [sets, setSets] = useState(1);
+    
 
-
+    const addSet = (reps: number, weight: number) => {
+        setCurrentSets([...currentSets, { reps, weight }]);
+    };
+      for (let i = sets; i < 10; i++)
     return(
         <form onSubmit={handleSubmit}>
-      
-        <Input type="text"  name={"name"} placeholder={"Enter workout name"} onChange={handleChange} value={formData.name}/>
-        <Input type="text" name={"sets"} placeholder={"Enter workout sets"} onChange={handleChange} value={formData.sets}/>
+        <Box mb={2}> <Input type="text"  name={"workoutname"} placeholder={"Enter workout name"} onChange={handleChange} value={formData.workoutname}/></Box>
+        <Box mb={2}> <Input type= "text" name= {"exersizename"} placeholder={"Enter Exercise name"} onChange={(e)=> setExerciseName(e.target.value)}/></Box>
+        <Box mb={2}> <Input type="number" name={"sets"} placeholder={"Enter number of sets"} onChange={handleChange} value={formData.exercises}/></Box>
+        <button onClick = {handleSave}> Update Sets </button>
     
         <Input type="text" name={"reps"} placeholder={"Enter workout reps"} onChange={handleChange} value={formData.reps}/>
     

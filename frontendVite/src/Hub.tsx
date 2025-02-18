@@ -11,7 +11,7 @@ import Joke from "./Joke";
 import Advice from "./Advice";
 import Workout from "./Workout";
 import Diet from "./Diet";
-import EnterWorkout from "./EnterWorkout";
+import EnterWorkout from "./EnterWorkout2";
 
 interface Question {
   question: string;
