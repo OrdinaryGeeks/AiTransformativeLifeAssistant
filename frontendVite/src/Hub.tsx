@@ -114,20 +114,23 @@ const getDiet = () => {
   
 }// Convert the array of characters back to a string
 const getAWordScramble = () => {
-const words = (["Bagel", "Tortoise", "Mouse"]);
 
-setWordScramble(words);
 
-let scrambledWords:string[] = [];
-words.forEach((word) => {
+
+
+axios
+.get<[]>("http://localhost:8000/getWordScramble").then((response) => {alert(response);
+ console.log(response.data); setWordScramble(response.data);
+
+ let scrambledWords:string[] = [];
+response.data.forEach((word) => {
 
 scrambledWords.push(scrambleWord(word));
 
 
 })
 setWordScrambleMixed(scrambledWords);
-
-
+// 
 setShowJoke(false);
 setShowAdvice(false);
 setShowWorkout(false);
@@ -136,6 +139,8 @@ setShowDiet(false);
 setShowEnterWorkout(false);
 setShowCrossWord(false);
 setShowWordScramble(true);
+}
+);
 
 
 
