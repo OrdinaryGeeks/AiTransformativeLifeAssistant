@@ -1,14 +1,30 @@
 
+import Box from '@mui/material/Box'
 import './App.css'
 
-import HireNathan from './HireNathan'
+import Hub from './Hub'
 
 function App() {
  
+  /*
+const [workoutName, setWorkoutName] = useState("");
+const [workoutReps, setWorkoutReps] = useState<number[]>([]);
+const [workoutSets, setWorkoutSets] = useState<number[]>([]);
+const [workoutWeights, setWorkoutWeights] = useState<number[]>([])
+*/
+
+
 
   return (
+
     <>
-     <HireNathan/>
+    
+    <Box sx={{width:1, justifyContent:"center", alignItems: "center",
+     flexDirection:"row", display: 'flex'}}>
+    
+     <Hub/>
+    
+    </Box>
     </>
   )
 }
