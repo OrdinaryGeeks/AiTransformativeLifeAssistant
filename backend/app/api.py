@@ -12,11 +12,20 @@ import random
 
 import subprocess
 
-class Exercise(BaseModel):
+import os
+import webbrowser
+
+class Set(BaseModel):
+    reps: int
+    weight: int
+class Workout(BaseModel):
     name: str
-    sets: List[int]
-    reps: List[int]
-    weights:List[int]
+    sets: List[Set]
+
+class Exercise(BaseModel):
+    workoutname: str
+    exercises: List[Workout]
+    
 
 letters=[]
 words = []
@@ -24,7 +33,8 @@ possibleHorizontal = []
 possibleVertical = []
 process = ''
 
-file_path = "workout.txt"
+workout_path = "./workouts/workout.txt"
+workoutContextPath = "./workouts/context.txt"
 
 
 def SetupChatApp():
@@ -37,6 +47,47 @@ def SetupChatApp():
 
     process = subprocess.Popen(powershell_command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
 
+
+def find_process_id(process_name):
+    try:
+        result = subprocess.check_output(['pgrep', '-f', process_name])
+        return int(result.strip())
+    except subprocess.CalledProcessError:
+        return None
+    
+
+def RefreshChatApp():
+    
+
+    GetExit()
+    SetupChatApp()
+    GetWelcomeMessage()
+    GetName()
+
+def GetExit():
+    
+
+    global process
+    print("exiting")
+    i = 0
+    #user_input = input("What is your question")
+    process.stdin.write("exit" + "\n")
+    process.stdin.flush()
+    response=""
+    foundBotResponse = False
+    while True:
+        
+       
+        i+=1
+
+
+        
+        output = process.stdout.readline()
+
+        bigE = output.find("Exiting")
+        littleE = output.find("exiting")
+        if(bigE != -1):
+            break
 
 def ResetLetters():
     global letters
@@ -69,7 +120,7 @@ def GetWelcomeMessage():
             
         
             
-        
+
         if(i == 7):
             
             break
@@ -111,7 +162,6 @@ def GetQuestionWithList(question):
     response=""
     foundBotResponse = False
 
-    words=["apple", "banana"]
     while True:
         
        
@@ -121,15 +171,15 @@ def GetQuestionWithList(question):
         
         output = process.stdout.readline()
 
-        print(output + " " + str(i))
+        
         if output.find("--------------------------------------------------------------------------------apple") != -1:
             
                 
             break
 
-        #print(output + " is before the if statements " + str(i))
+        
 
-        """ if output.find("<|start_header_id|>assistant<|end_header_id|>") != -1:
+        if output.find("<|start_header_id|>assistant<|end_header_id|>") != -1:
             foundBotResponse = True
             newline1= process.stdout.readline()
             dashline=process.stdout.readline()
@@ -142,7 +192,7 @@ def GetQuestionWithList(question):
                 break
             else:
                 words.append(process.stdout.readline())
-         """
+         
         
 
        # response+=output
@@ -150,6 +200,7 @@ def GetQuestionWithList(question):
     return words
         
 def GetQuestion(question):
+
     global process
     print(question)
     i = 0
@@ -169,23 +220,25 @@ def GetQuestion(question):
 
         #print(output + " is before the if statements " + str(i))
 
-        if output.find("<|start_header_id|>assistant<|end_header_id|>") != -1:
+        if output.find("<|start_header_id|>assistant") != -1:
             foundBotResponse = True
             output= process.stdout.readline()
             i+=1
            # print(output + " is before the if statements " + str(i))
             response = process.stdout.readline()
-            print(response + " Is response  because its the line after startheaderid")
-            return response
-        if foundBotResponse == True:
+            #print(response + " Is response  because its the line after startheaderid")
+            
+        elif foundBotResponse == True:
             if output.find("--------------------------------------------------------------------------------apple") != -1:
             
                 
                 break
+            else:
+                response += output
         
 
        # response+=output
-        print(output)
+       # print(output, "resp", response)
     return response
 
 
@@ -216,7 +269,7 @@ def MakeHorEntry(word, x, y):
 def GetWordsToScramble():
     global words
 
-    response = GetQuestionWithList("Give me 10 medium sized words. Before you return the word, return two # signs.  Then return each word on a separate line with no other text.")
+    response = GetQuestionWithList("Give me 10 medium sized words. Return each word on a separate line with no other text.")
 
 
 
@@ -267,7 +320,7 @@ def GetClues():
         MakeHorEntry(word, 0, 0)
 
     tries = 0
-    while tries < 10:
+    while tries < 5:
 
         print(str(tries) + " is tries")
         GetMoreClues()
@@ -349,36 +402,35 @@ def GetMoreClues():
                 
                 while(i + hor < len(letters) and len(letters[i+hor][j]) <= 0 ):
             #        print(str(hor), "is hor")
-                    hor += 1
+                    
+
+                    #if the vert index (even though it says hor) is less than the total number of rows
                     if(i + hor < len(letters)):
+                        
+                        #if you can check the 
                         if(j >0 and len(letters[i+hor][j-1]) > 0):
                             break
                         if(j<9 and len(letters[i + hor][j+1]) > 0 ):
                             break
                     
-                    
+                    hor += 1
                    # possibleHorizontal[i].append(hor)
                 possibleHorizontal[i][j]=(hor)
                 ver = 1
                 while(j+ ver < len(letters[i]) and len(letters[i][j+ver]) <= 0 ):
              #       print(str(ver), " is ver")
-                    ver += 1
+                    
                     if(j + ver < len(letters[i])):
                         if(j >0 and len(letters[i-1][j+ver]) > 0):
                             break
                         if(j<9 and len(letters[i + 1][j+ver]) > 0 ):
                             break
-                    
+                    ver += 1
                 possibleVertical[i][j]=(ver)
             else:
                 possibleHorizontal[i][j] =(0)
                 possibleVertical[i][j]=(0)
-         #   print(possibleHorizontal)
-         #   print(possibleVertical)
-
-
-      #  print(possibleHorizontal)
-     #   print(possibleVertical)
+      
 
 SetupChatApp()
 GetWelcomeMessage()
@@ -413,13 +465,15 @@ app.add_middleware(
 #documents = SimpleDirectoryReader("../documents").load_data()
 #documents = SimpleDirectoryReader("./documents").load_data()
 
-path = "C:/Users/alect/genie_bundle"
+#path = "C:/Users/alect/genie_bundle"
 
 
 #service_context = ServiceContext.from_defaults(llm=OpenAI(model="gpt-3.5-turbo", temperature=0.5, system_prompt="You are helping to make a decision about whether or not to hire Nathan based upon your companies entered answers of what they are looking for and what they are like.  Also list reasons why you gave your answer"))
 #index = VectorStoreIndex.from_documents(documents, service_context=service_context)
 
-#index = VectorStoreIndex.from_documents(documents)
+#index = VectorStoreIn
+# 
+# dex.from_documents(documents)
 
 
 @app.get("/getCrossword", tags=["crossword"])
@@ -439,12 +493,29 @@ async def post_workout(workout: Exercise):
     
     tempWorkout = ""
     i = 0
-    with open(file_path, "w") as file:
-        file.write(workout.name )
+
+    print(" post workout")
+
+
+    with open(workout_path, "w") as file:
+        #file.write(workout.workoutname )
         file.write("\n")
-        for set in workout.sets:
-            file.write(str(set) + " set - " + str(workout.reps[i]) + " with weight " + str(workout.weights[i]))
-            file.write("\n")
+        file.write("This workout consisted of " + str(len(workout.exercises)) +  " exercises. ")
+        for exercise in workout.exercises:
+            file.write("I did " + str(len(exercise.sets)) + ' sets of ' + exercise.name + ". ")
+            file.write("The sets were as follows:")
+            for set in exercise.sets:
+                print(" sets " )
+                file.write("(")
+                if i<  len(exercise.sets) :
+                    print(" reps ")
+                    
+                    file.write(str(set.reps) +  " reps with " + str(set.weight) + " weight ")
+                if  i < len(exercise.sets) -1 and len(exercise.sets) >1:
+                    print(", ")
+                file.write(")")
+
+            print(" exercise ") 
 
 
 
@@ -453,9 +524,9 @@ async def post_workout(workout: Exercise):
     print(workout)
 
 @app.get("/helpmewithdiet", tags=["diet"])
-async def help_me_with_diet():
+async def help_me_with_diet(diet):
 
-    return GetQuestion("Recommend me a healthy diet for today in under 50 words")
+    return GetQuestion("Give me a meal plan for breakfast, lunch, and dinner using the " + diet + ".  Give high variation on the meals.  Give me 4 days worth of meals.")
     
 
 @app.get("/tellmeajoke", tags=["joke"])
@@ -463,25 +534,62 @@ async def tell_me_a_joke():
    
     
     
-    return GetQuestion("Tell me a joke in under  60 words")
+    return GetQuestion("Tell me a joke")
+
+goals = ""
 
 @app.get("/createworkout", tags=["workout"])
-async def create_a_workout():
-   
+async def create_a_workout(muscle="false", weight="false", endurance="false", freq="5", level="beginner"):
+    global goals
  
-    return GetQuestion("Give me a full body workout in under 60 words")
+  
+    query = "Give me a workout plan for an entire week with heavy variation. I want to workout " + freq+" times a week."
+    if(muscle!= "false"):
+        addWorkoutQueryGoals("muscle")
+    if(endurance != "false"):
+        addWorkoutQueryGoals("endurance")
+    if(weight != "false"):
+        addWorkoutQueryGoals("weight")
+    query += "My goals are " + goals+ ". My fitness level is " + level+"."
+    return GetQuestion(query)
+
+
+
+def addWorkoutQueryGoals(flag):
+    global goals
+    if(goals == ""):
+        if flag == "muscle":
+            goals += "muscle gain"
+        if flag == "endurance":
+            goals += "endurance"
+        if flag == "weight":
+            goals+= "weight loss"
+    else:
+        if flag == "muscle":
+            goals += " and muscle gain"
+        if flag == "endurance":
+            goals += " and endurance"
+        if flag == "weight":
+            goals+= " and weight loss"
+        
+        
 
 @app.get("/givemeadvice", tags=["advice"])
 async def give_me_advice():
    
     
     
-    return GetQuestion("Give me advice in under 60 words")
+    return GetQuestion("Give me advice")
 
 
 
 
+@app.get("/resetChatApp", tags=["reset"])
+async def reset_chat_app():
 
+
+    RefreshChatApp()
+    return 
     
 
 
@@ -496,5 +604,10 @@ async def read_root() -> dict:
 
 
 #app.mount("/", StaticFiles(directory="./buildFE", html = True))
-app.mount("/home", StaticFiles(directory="./_internal/buildFE2", html = True))
+app.mount("/", StaticFiles(directory="./_internal/buildFE2", html = True))
 #app.mount("/home", SPAStaticFiles(directory="./build/", html=True))
+
+
+
+url = "http://localhost:8000/index.html"
+webbrowser.open(url)
