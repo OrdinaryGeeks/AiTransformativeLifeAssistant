@@ -435,13 +435,7 @@ def GetMoreClues():
 SetupChatApp()
 GetWelcomeMessage()
 GetName()
-#GetClues()
-#GetWordsToScramble()
 
-
-
-
-#GetQuestion()
 
 app = FastAPI()
 
@@ -460,20 +454,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-#openai.api_key = "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"
 
-#documents = SimpleDirectoryReader("../documents").load_data()
-#documents = SimpleDirectoryReader("./documents").load_data()
-
-#path = "C:/Users/alect/genie_bundle"
-
-
-#service_context = ServiceContext.from_defaults(llm=OpenAI(model="gpt-3.5-turbo", temperature=0.5, system_prompt="You are helping to make a decision about whether or not to hire Nathan based upon your companies entered answers of what they are looking for and what they are like.  Also list reasons why you gave your answer"))
-#index = VectorStoreIndex.from_documents(documents, service_context=service_context)
-
-#index = VectorStoreIn
-# 
-# dex.from_documents(documents)
 
 
 @app.get("/getCrossword", tags=["crossword"])
