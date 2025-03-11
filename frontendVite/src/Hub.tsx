@@ -12,6 +12,7 @@ import Advice from "./Advice";
 import Workout from "./Workout";
 import Diet from "./Diet";
 import EnterWorkout from "./EnterWorkout";
+import Welcome from "./Welcome";
 
 interface Question {
   question: string;
@@ -183,12 +184,12 @@ const hireNathanQuestion = (event : any) => {
    .then((response) => {alert(response); parseForWorkouts(response);});
 };
   return (
-    <Container sx={{justifyContent:"center", width:1}}>
+    <Container maxWidth={false} sx={{border:4, justifyContent:"center", width:1}}>
 
     <Typography sx={{textAlign:"center"}}>Welcome to Wala The wellness and life assistant</Typography>
-    <Container sx={{width:1, flexDirection:"row", display: 'flex'}}>
+    <Container maxWidth={false} sx={{width:1, flexDirection:"row", display: 'flex'}}>
 
-      <Card sx={{width:'30%'}}>
+      <Card sx={{width:'40%'}}>
      
       <FormControl  className="MuiFormControl-marginDense" variant="outlined" onSubmit={hireNathanQuestion}>
       
@@ -233,6 +234,7 @@ onChange={(event) => console.log(event.target.files)}
   {showWorkout && <Workout workout={workout}></Workout>}
   {showDiet && <Diet diet={diet}></Diet>}
   {showEnterWorkout && <EnterWorkout></EnterWorkout>}
+  {!showEnterWorkout && !showDiet && !showWorkout && !showAdvice &&!showJoke && <Welcome></Welcome>}
 </Card>
 </Container>
 </Container>);
